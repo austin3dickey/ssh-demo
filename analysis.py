@@ -15,11 +15,10 @@ t = con.read_parquet(
     union_by_name=True,
 )
 
+# Inspect the table structure
 t
-len(t.columns)  # 22 columns
-
-# Way too big for laptops if represented in pandas! (Do you have 400 GB of RAM?)
-t.count().execute()  # 1_547_741_381 rows
+len(t.columns)
+t.count().execute()
 
 # Find the mean tip percentage by number of passengers, among trips costing more than $100.
 analysis = (

@@ -21,10 +21,10 @@ len(t.columns)
 t.count().execute()
 
 # Find the mean tip percentage by number of passengers, among trips costing more than $100.
-analysis = (
+tip_analysis = (
     t.filter(
         [
-            _.pickup_at < "2009-02-01",
+            _.pickup_at.between("2009-01-01", "2009-01-31"),
             _.total_amount > 100,
             _.passenger_count > 0,
         ]
@@ -38,7 +38,7 @@ analysis = (
 
 # Plot it.
 (
-    ggplot(data=analysis, mapping=aes(x="passenger_count", y="mean_tip_pct", fill="log_count"))
+    ggplot(data=tip_analysis, mapping=aes(x="passenger_count", y="mean_tip_pct", fill="log_count"))
     + geom_bar(stat="identity")
     + scale_x_continuous(breaks=range(15))
     + ggtitle("Tip % by passenger count (for expensive trips)")

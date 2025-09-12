@@ -5,8 +5,16 @@ import ibis
 from ibis import _
 from plotnine import ggplot, aes, geom_bar, scale_x_continuous, ggtitle
 
-# Load an ibis table - this doesn't actually read the data yet
-t = ibis.read_parquet("data/*/*.parquet", table_name="nyctaxi", union_by_name=True)
+# Set up any backend
+con = ibis.duckdb.connect()
+
+# Load an ibis table (this doesn't actually read the data yet)
+t = con.read_parquet(
+    "s3://ursa-labs-taxi-data/**",
+    table_name="nyctaxi",
+    union_by_name=True,
+)
+
 t
 len(t.columns)  # 22 columns
 
@@ -14,9 +22,10 @@ len(t.columns)  # 22 columns
 t.count().execute()  # 1_547_741_381 rows
 
 # Find the mean tip percentage by number of passengers, among trips costing more than $100.
-x = (
+analysis = (
     t.filter(
         [
+            _.pickup_at < "2009-02-01",
             _.total_amount > 100,
             _.passenger_count > 0,
         ]
@@ -30,7 +39,7 @@ x = (
 
 # Plot it.
 (
-    ggplot(data=x, mapping=aes(x="passenger_count", y="mean_tip_pct", fill="log_count"))
+    ggplot(data=analysis, mapping=aes(x="passenger_count", y="mean_tip_pct", fill="log_count"))
     + geom_bar(stat="identity")
     + scale_x_continuous(breaks=range(15))
     + ggtitle("Tip % by passenger count (for expensive trips)")

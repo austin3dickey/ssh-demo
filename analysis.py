@@ -1,6 +1,8 @@
 # Data from https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page
 # hosted by Ursa Labs (see https://ursalabs.org/arrow-r-nightly/articles/dataset.html)
 
+from pathlib import Path
+
 import ibis
 from ibis import _
 from plotnine import ggplot, aes, geom_bar, scale_x_continuous, ggtitle
@@ -9,8 +11,9 @@ from plotnine import ggplot, aes, geom_bar, scale_x_continuous, ggtitle
 con = ibis.duckdb.connect()
 
 # Load an ibis table (this doesn't actually read the data yet)
+location = "data/**" if Path("data").exists() else "s3://ursa-labs-taxi-data/**"
 t = con.read_parquet(
-    "s3://ursa-labs-taxi-data/**",
+    location,
     table_name="nyctaxi",
     union_by_name=True,
 )

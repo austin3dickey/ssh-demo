@@ -1,6 +1,6 @@
 # ssh-demo
 
-Demo and slides for my "Outgrowing Your Laptop With Positron" talk at `posit::conf(2025)`.
+Demo and [slides](slides.pdf) for my "Outgrowing Your Laptop With Positron" talk at `posit::conf(2025)`.
 
 ### To run the demo
 
